@@ -60,7 +60,7 @@ prompt = st.text_input("🔍 어떤 그림을 원하시나요?", placeholder="�
 
 size_label = st.selectbox(
     "이미지 크기 선택",
-    options=["256x256", "512x512", "1024x1024"],
+    options=["1024x1024", "1024x1792", "1792x1024"]
     index=1,
     help="크기가 클수록 더 선명하지만 시간이 더 걸릴 수 있어요.",
 )
