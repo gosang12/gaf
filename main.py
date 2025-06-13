@@ -1,8 +1,7 @@
 import streamlit as st
 from openai import OpenAI
-import base64
 
-# OpenAI 클라이언트 초기화 (API 키는 .streamlit/secrets.toml에 저장)
+# OpenAI 클라이언트 초기화
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.set_page_config(
@@ -94,19 +93,13 @@ if generate_button:
                     size=size_label,
                     quality="standard",
                     n=1,
-                    response_format="b64_json"
                 )
-                img_data = response.data[0].b64_json
-                img_bytes = base64.b64decode(img_data)
 
-                st.image(img_bytes, caption=f"‘{prompt}’의 AI 그림", use_column_width=True)
+                image_url = response.data[0].url
 
-                st.download_button(
-                    label="이미지 다운로드",
-                    data=img_bytes,
-                    file_name="ai_generated_image.png",
-                    mime="image/png",
-                )
+                st.image(image_url, caption=f"‘{prompt}’의 AI 그림", use_column_width=True)
+                st.markdown(f"[🔗 이미지 직접 보기]({image_url})")
+
             except Exception as e:
                 try:
                     err = e.response.json()["error"]
