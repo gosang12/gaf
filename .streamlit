@@ -1,4 +1,0 @@
-your-project-folder/
-├── main.py
-└── .streamlit/
-    └── secrets.toml
