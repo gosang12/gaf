@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# 스타일 커스터마이징
+# CSS 스타일링
 st.markdown(
     """
     <style>
@@ -49,34 +49,32 @@ st.markdown(
 st.markdown('<div class="main">', unsafe_allow_html=True)
 
 st.title("🖼️ AI 그림 생성기")
-st.write(
-    """
-    텍스트로 원하는 그림을 입력하면 AI가 멋진 이미지를 생성해줘요!  
-    OpenAI DALL·E API를 이용한 간단하고 빠른 이미지 생성기입니다.
-    """
-)
+st.write("텍스트로 원하는 그림을 입력하면 AI가 멋진 이미지를 생성해줘요! OpenAI DALL·E 3 API를 이용한 간단하고 빠른 이미지 생성기입니다.")
 
-prompt = st.text_input("🔍 어떤 그림을 원하시나요?", placeholder="예) 고양이가 우주선 타고 날아가는 모습")
+# 🎨 폼 UI로 구성 (모바일 대응)
+with st.form("image_form"):
+    prompt = st.text_area("🔍 어떤 그림을 원하시나요?", placeholder="예) 고양이가 우주선 타고 날아가는 모습", height=100)
 
-size_label = st.selectbox(
-    "이미지 크기 선택",
-    options=["1024x1024", "1024x1792", "1792x1024"],  # ← 여기에 콤마 꼭!
-    index=1,
-    help="크기가 클수록 더 선명하지만 시간이 더 걸릴 수 있어요.",
-)
+    size = st.selectbox(
+        "이미지 크기 선택",
+        options=["1024x1024", "1024x1792", "1792x1024"],
+        index=0,
+        help="크기가 클수록 더 선명하지만 시간이 더 걸릴 수 있어요."
+    )
 
-generate_button = st.button("그림 생성하기 🎨")
+    submitted = st.form_submit_button("🎨 그림 생성하기")
 
-if generate_button:
+# 생성 버튼 눌렀을 때 처리
+if submitted:
     if not prompt.strip():
         st.warning("먼저 그림에 대한 설명을 입력해주세요!")
     else:
         with st.spinner("AI가 그림을 그리고 있어요..."):
             try:
                 response = client.images.generate(
-                    model="dall-e-3",  # 최신 모델 사용, 필요시 "dall-e-2"
+                    model="dall-e-3",
                     prompt=prompt,
-                    size=size_label,
+                    size=size,
                     quality="standard",
                     n=1,
                     response_format="b64_json"
@@ -95,7 +93,7 @@ if generate_button:
                 )
 
             except Exception as e:
-                st.error(f"이미지 생성 중 오류가 발생했습니다: {e}")
+                st.error(f"이미지 생성 중 오류가 발생했습니다:\n\n{e}")
 
 st.markdown("</div>", unsafe_allow_html=True)
 
