@@ -1,10 +1,9 @@
 import streamlit as st
 import openai
-from io import BytesIO
 import base64
 
-# OpenAI API 키 설정 (환경변수로 설정하거나 여기에 직접 넣어도 됨)
-openai.api_key = st.secrets.get("OPENAI_API_KEY") or "YOUR_OPENAI_API_KEY"
+# API 키를 환경변수 STREAMLIT_OPENAI_API_KEY에서 읽어옴 (Streamlit Cloud에서 설정 가능)
+openai.api_key = st.secrets.get("OPENAI_API_KEY") or st.env.get("STREAMLIT_OPENAI_API_KEY")
 
 st.set_page_config(
     page_title="AI 그림 생성기 🎨",
@@ -13,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# CSS 꾸미기 (간단한 폰트, 색상, 버튼 스타일)
+# CSS 꾸미기
 st.markdown(
     """
     <style>
