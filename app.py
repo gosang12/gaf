@@ -3,7 +3,7 @@ from utils import init_user, load_user, save_user, save_image
 import openai
 import requests
 
-openai.api_key = "YOUR_OPENAI_API_KEY"  # 여기에 본인의 키 입력
+openai.api_key = "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"  # 여기에 본인의 키 입력
 
 init_user()
 user = load_user()
