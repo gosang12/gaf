@@ -1,56 +1,38 @@
-import streamlit as st
-from PIL import Image
-import requests
-from io import BytesIO
-import base64
+try:
+    import streamlit as st
+    import openai
+    import requests
+except ImportError:
+    import os
+    os.system("pip install streamlit openai requests")
+    import streamlit as st
+    import openai
+    import requests
 
-# 제목 및 스타일
-st.set_page_config(page_title="🎨 AI 그림 생성기", layout="centered")
-st.markdown(
-    """
-    <style>
-    .main {
-        background-color: #f4f4f4;
-    }
-    .title {
-        font-size: 40px;
-        text-align: center;
-        color: #4A4A4A;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    .subtitle {
-        font-size: 20px;
-        text-align: center;
-        color: #777;
-        margin-bottom: 30px;
-    }
-    </style>
-    """, unsafe_allow_html=True
-)
+# ▶ OpenAI API 키 (여기에 본인의 키를 붙여넣으세요)
+openai.api_key = "sk-여기-당신의-API키를-붙여넣으세요"
 
-# 타이틀
-st.markdown('<div class="title">🖌️ AI 그림 생성기</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">텍스트를 입력하면 AI가 그림을 그려드려요!</div>', unsafe_allow_html=True)
+# ▶ Streamlit 페이지 설정
+st.set_page_config(page_title="AI 그림 생성기", page_icon="🎨")
+st.title("🎨 AI 그림 생성기")
+st.write("텍스트로 설명하면 AI가 그림을 그려드려요!")
 
-# 사용자 입력
-prompt = st.text_input("✏️ 그리고 싶은 내용을 입력하세요:", placeholder="예: 고양이가 우주를 여행하는 모습")
+# ▶ 사용자 입력
+prompt = st.text_input("무엇을 그릴까요? 예: '우주에서 기타 치는 고양이'")
 
-# 버튼
-if st.button("그림 생성하기 🎨") and prompt:
-    with st.spinner("AI가 열심히 그림을 그리고 있어요..."):
-        # 예시: DALL·E API로 이미지 생성 (아래는 임의 URL 사용)
-        image_url = "https://source.unsplash.com/600x400/?art,painting"  # 테스트용 이미지
-
-        response = requests.get(image_url)
-        image = Image.open(BytesIO(response.content))
-        st.image(image, caption="🧠 AI가 그린 그림", use_column_width=True)
-
-        # 다운로드 버튼
-        buffered = BytesIO()
-        image.save(buffered, format="PNG")
-        b64 = base64.b64encode(buffered.getvalue()).decode()
-        href = f'<a href="data:file/png;base64,{b64}" download="ai_art.png">📥 그림 다운로드</a>'
-        st.markdown(href, unsafe_allow_html=True)
-else:
-    st.info("먼저 그리고 싶은 내용을 입력해주세요 😊")
+# ▶ 버튼 누르면 그림 생성
+if st.button("그림 그리기"):
+    if not prompt:
+        st.warning("먼저 그림 설명을 입력해주세요!")
+    else:
+        with st.spinner("그림 그리는 중... 잠시만 기다려주세요!"):
+            try:
+                response = openai.Image.create(
+                    prompt=prompt,
+                    n=1,
+                    size="512x512"
+                )
+                image_url = response["data"][0]["url"]
+                st.image(image_url, caption="🖼️ 생성된 그림", use_column_width=True)
+            except Exception as e:
+                st.error(f"오류가 발생했습니다: {e}")
