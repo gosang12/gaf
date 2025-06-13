@@ -3,7 +3,7 @@ import openai
 import base64
 
 # API 키를 환경변수 STREAMLIT_OPENAI_API_KEY에서 읽어옴 (Streamlit Cloud에서 설정 가능)
-openai.api_key = st.secrets.get("OPENAI_API_KEY") or st.env.get("STREAMLIT_OPENAI_API_KEY")
+openai.api_key = st.secrets.get("OPENAI_API_KEY")
 
 st.set_page_config(
     page_title="AI 그림 생성기 🎨",
