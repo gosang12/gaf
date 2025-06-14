@@ -8,8 +8,7 @@ from datetime import datetime
 
 # API 키 불러오기
 load_dotenv()
-openai.api_key = os.getenv("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")
-
+openai.api_key = os.getenv("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")
 # 크레딧 & 히스토리 관리용 JSON 경로
 USER_DATA_FILE = "user_data.json"
 IMAGE_HISTORY_FOLDER = "history"
